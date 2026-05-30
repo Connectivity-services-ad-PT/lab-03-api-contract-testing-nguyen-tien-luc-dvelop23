@@ -26,13 +26,18 @@ jobs:
         run: npm run lint:contracts
 
       - name: Start IoT mock server
-        run: nohup npm run mock:iot > prism-iot.log 2>&1 &
+        run: |
+          nohup npx prism mock contracts/iot-ingestion.openapi.yaml --port 4010 --host 127.0.0.1 > prism-iot.log 2>&1 &
 
       - name: Start AI Vision mock server
-        run: nohup npm run mock:vision > prism-vision.log 2>&1 &
+        run: |
+          nohup npx prism mock contracts/ai-vision.openapi.yaml --port 4011 --host 127.0.0.1 > prism-vision.log 2>&1 &
 
       - name: Wait for mock servers
-        run: npx wait-on http://localhost:4010/health http://localhost:4011/health --timeout 30000
+        run: |
+          npx wait-on tcp:127.0.0.1:4010 tcp:127.0.0.1:4011 --timeout 60000
+          curl -i http://127.0.0.1:4010/health
+          curl -i http://127.0.0.1:4011/health
 
       - name: Run Newman contract tests
         run: npm run test:mock
@@ -40,7 +45,9 @@ jobs:
       - name: Show Prism logs on failure
         if: failure()
         run: |
+          echo "===== IoT Prism Log ====="
           cat prism-iot.log || true
+          echo "===== AI Vision Prism Log ====="
           cat prism-vision.log || true
 
       - name: Upload Newman reports
