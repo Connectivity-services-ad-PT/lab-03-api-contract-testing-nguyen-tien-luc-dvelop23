@@ -1,10 +1,15 @@
 openapi: 3.1.0
 info:
-  title: Smart Campus — AI Vision API
-  version: 0.3.0
+  title: Smart Campus AI Vision API
+  version: 1.0.0
   description: |
+    API contract for AI Vision service in Smart Campus.
     Contract mock tối thiểu cho consumer-side smoke test trong FIT4110 Lab 03.
     File này giúp Camera Stream hoặc Core Business gọi thử AI Vision khi service thật chưa hoàn thiện.
+  contact:
+    name: Nguyễn Tiến Lực
+    email: lucdubai2380@gmail.com
+
 servers:
   - url: http://localhost:4011
     description: Prism mock server for AI Vision
